@@ -4,7 +4,7 @@ import 'views/home_screen.dart';
 import 'viewmodels/coin_list_view_model.dart';
 
 void main() {
-  // We initialize the app by setting up the theme and state management
+  // App initialization
   runApp(const MyApp());
 }
 
@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We use MultiProvider to register all ViewModels that manage global state.
+    // Register all ViewModels that manage global state with multi-provider.
     return MultiProvider(
       providers: [
-        // The CoinListViewModel is created here and listens for changes
+        // The CoinListViewModel 
         // in the API service calls, automatically fetching coins on creation.
         ChangeNotifierProvider(create: (_) => CoinListViewModel()),
       ],
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         title: 'Crypto Tracker',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          // Light Theme inspired by the design
+          // Light Theme 
           brightness: Brightness.light,
           primaryColor:
               const Color(0xFF7B61FF), // Primary accent color (Purple/Blue)
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
             secondary: const Color(0xFF50AF95), // Secondary accent (Green)
           ),
           fontFamily:
-              'Poppins', // Changed font to Poppins for a more artistic/modern feel
+              'Poppins', // Changed font to Poppins 
           textTheme: const TextTheme(
             // Set default text colors for the light theme
             bodyLarge: TextStyle(color: Colors.black87),
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          // FIX APPLIED HERE: Changed CardTheme to CardThemeData to match the ThemeData property type.
+          
           cardTheme: CardThemeData(
             color: Colors.white,
             elevation: 4,
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             shadowColor: Colors.grey.withOpacity(0.1),
           ),
-          // Set progress indicator color
+          // Progress indicator color
           progressIndicatorTheme: const ProgressIndicatorThemeData(
             color: Color(0xFF7B61FF),
           ),
