@@ -1,0 +1,49 @@
+name: crypto_tracker_mvvm
+description: A Flutter crypto tracker app built with MVVM, integrating the CoinGecko API.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Standard Flutter icons
+  cupertino_icons: ^1.0.6
+
+  # Networking for API calls (used in lib/services/api_service.dart)
+  http: ^1.1.0
+
+  # State Management for MVVM architecture (used in lib/viewmodels and lib/views)
+  provider: ^6.0.5
+
+  # Charting library for the DetailScreen (used in lib/views/detail_screen.dart)
+  fl_chart: ^0.65.0
+
+  # Internationalization for number and date formatting (good practice for finance apps)
+  intl: ^0.18.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+  # For generating app icons
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+
+# Configuration for flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/download.jfif"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/download.jfif"

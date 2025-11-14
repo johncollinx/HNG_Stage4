@@ -1,0 +1,25 @@
+workflows:
+  build-android:
+    name: Build Android APK
+    
+    environment:
+      flutter: 3.35.7   # <- updated to match flutter_lints requirement
+      java: 17
+      xcode: latest
+
+    scripts:
+      - name: Clean and get dependencies
+        script: |
+          flutter clean
+          flutter pub get
+
+      - name: Generate launcher icons
+        script: |
+          flutter pub run flutter_launcher_icons
+
+      - name: Build release APK
+        script: |
+          flutter build apk --release
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
