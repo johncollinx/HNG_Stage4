@@ -25,38 +25,43 @@ class ApiService {
     final cachedJson = prefs.getString('cached_coin_list');
     final cachedTime = prefs.getInt('cached_coin_list_time');
 
-    // 1. Use cache if it's fresh (valid for 5 minutes)
+    // 1️⃣ Use cache if fresh (5 minutes)
     if (cachedJson != null && _isCacheValid(cachedTime, 5)) {
       try {
-        final List<dynamic> cachedData = jsonDecode(cachedJson);
-        return cachedData.map((json) => Coin.fromJson(json)).toList();
-      } catch (_) {}
+        final List data = jsonDecode(cachedJson);
+        return data.map((item) => Coin.fromJson(item)).toList();
+      } catch (e) {
+        debugPrint("⚠️ Cache decode error: $e");
+      }
     }
 
-    // 2. Fetch from network
+    // 2️⃣ Fetch from API
     try {
       final url = Uri.parse(
-          '$_baseUrl/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false');
+        '$_baseUrl/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false',
+      );
 
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        // Save fresh cache
+        // Store JSON in cache
         prefs.setString('cached_coin_list', response.body);
-        prefs.setInt('cached_coin_list_time',
-            DateTime.now().millisecondsSinceEpoch);
+        prefs.setInt(
+          'cached_coin_list_time',
+          DateTime.now().millisecondsSinceEpoch,
+        );
 
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => Coin.fromJson(json)).toList();
+        final List data = jsonDecode(response.body);
+        return data.map((item) => Coin.fromJson(item)).toList();
       }
     } catch (e) {
-      debugPrint('Coin list fetch error: $e');
+      debugPrint("❌ Network fetch error: $e");
     }
 
-    // 3. If network fails, return last known cached data
+    // 3️⃣ Fallback to last known cache (if any)
     if (cachedJson != null) {
-      final List<dynamic> fallback = jsonDecode(cachedJson);
-      return fallback.map((json) => Coin.fromJson(json)).toList();
+      final List data = jsonDecode(cachedJson);
+      return data.map((item) => Coin.fromJson(item)).toList();
     }
 
     return [];
@@ -73,29 +78,36 @@ class ApiService {
     final cachedJson = prefs.getString(key);
     final cachedTime = prefs.getInt(timeKey);
 
-    // Cache duration varies by selected timeline
-    int cacheMinutes = {
-      '1': 2,     // 1D refresh often
-      '7': 10,
-      '30': 30,
-      '90': 60,
-      '365': 1440, // 24 hours
-    }[days] ?? 10;
+    // Cache duration per timeline
+    final cacheMinutes = {
+          '1': 2,
+          '7': 10,
+          '30': 30,
+          '90': 60,
+          '365': 1440, // 24 hours
+        }[days] ??
+        10;
 
-    // 1. Use cached chart data if valid
+    // 1️⃣ Return cached values if fresh
     if (cachedJson != null && _isCacheValid(cachedTime, cacheMinutes)) {
       try {
         final List data = jsonDecode(cachedJson);
         return data
-            .map((e) => PricePoint(e['t'] as int, (e['p'] as num).toDouble()))
+            .map((e) => PricePoint(
+                  e['t'] as int,
+                  (e['p'] as num).toDouble(),
+                ))
             .toList();
-      } catch (_) {}
+      } catch (e) {
+        debugPrint("⚠️ Chart cache decode error: $e");
+      }
     }
 
-    // 2. Fetch real-time data
+    // 2️⃣ Fetch from API
     try {
       final url = Uri.parse(
-          '$_baseUrl/coins/$coinId/market_chart?vs_currency=usd&days=$days');
+        '$_baseUrl/coins/$coinId/market_chart?vs_currency=usd&days=$days',
+      );
 
       final response = await http.get(url);
 
@@ -103,31 +115,37 @@ class ApiService {
         final data = jsonDecode(response.body);
 
         final List<PricePoint> list = (data['prices'] as List)
-            .map((e) =>
-                PricePoint((e[0] as num).toInt(), (e[1] as num).toDouble()))
+            .map((row) => PricePoint(
+                  (row[0] as num).toInt(),
+                  (row[1] as num).toDouble(),
+                ))
             .toList();
 
-        // Save cache
+        // Store compact cache (much smaller JSON)
         final encoded = jsonEncode(
-          list
-              .map((e) => {"t": e.timestamp, "p": e.price})
-              .toList(),
+          list.map((p) => {"t": p.timestamp, "p": p.price}).toList(),
         );
 
         prefs.setString(key, encoded);
-        prefs.setInt(timeKey, DateTime.now().millisecondsSinceEpoch);
+        prefs.setInt(
+          timeKey,
+          DateTime.now().millisecondsSinceEpoch,
+        );
 
         return list;
       }
     } catch (e) {
-      debugPrint('Chart fetch error: $e');
+      debugPrint("❌ Chart fetch error: $e");
     }
 
-    // 3. Return cached fallback if available
+    // 3️⃣ Provide fallback cached chart
     if (cachedJson != null) {
       final List data = jsonDecode(cachedJson);
       return data
-          .map((e) => PricePoint(e['t'] as int, (e['p'] as num).toDouble()))
+          .map((e) => PricePoint(
+                e['t'] as int,
+                (e['p'] as num).toDouble(),
+              ))
           .toList();
     }
 
