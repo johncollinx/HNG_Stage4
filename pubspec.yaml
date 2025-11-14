@@ -14,6 +14,8 @@ dependencies:
 
   # Standard Flutter icons
   cupertino_icons: ^1.0.6
+  # Caching Implementation
+  shared_preferences: ^2.2.2
 
   # Networking for API calls (used in lib/services/api_service.dart)
   http: ^1.1.0
