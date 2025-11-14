@@ -3,7 +3,7 @@ workflows:
     name: Build Android APK
     
     environment:
-      flutter: 3.35.7   # <- updated to match flutter_lints requirement
+      flutter: 3.35.7   
       java: 17
       xcode: latest
 
