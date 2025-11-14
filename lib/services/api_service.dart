@@ -10,7 +10,7 @@ import '../models/price_point.dart';
 class ApiService {
   static const String _baseUrl = 'https://api.coingecko.com/api/v3';
 
-  /// ---------------------- CACHE UTILITIES ----------------------
+  /// CACHE UTILITIES 
 
   bool _isCacheValid(int? timestamp, int minutes) {
     if (timestamp == null) return false;
@@ -18,24 +18,24 @@ class ApiService {
     return (now - timestamp) < minutes * 60 * 1000;
   }
 
-  /// ---------------------- FETCH COIN LIST ----------------------
+  ///FETCH COIN LIST
 
   Future<List<Coin>> fetchCoinList() async {
     final prefs = await SharedPreferences.getInstance();
     final cachedJson = prefs.getString('cached_coin_list');
     final cachedTime = prefs.getInt('cached_coin_list_time');
 
-    // 1️⃣ Use cache if fresh (5 minutes)
+    //  Use cache if fresh (5 minutes)
     if (cachedJson != null && _isCacheValid(cachedTime, 5)) {
       try {
         final List data = jsonDecode(cachedJson);
         return data.map((item) => Coin.fromJson(item)).toList();
       } catch (e) {
-        debugPrint("⚠️ Cache decode error: $e");
+        debugPrint("Cache decode error: $e");
       }
     }
 
-    // 2️⃣ Fetch from API
+    // Fetch from API
     try {
       final url = Uri.parse(
         '$_baseUrl/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false',
@@ -55,10 +55,10 @@ class ApiService {
         return data.map((item) => Coin.fromJson(item)).toList();
       }
     } catch (e) {
-      debugPrint("❌ Network fetch error: $e");
+      debugPrint("Network fetch error: $e");
     }
 
-    // 3️⃣ Fallback to last known cache (if any)
+    // Fallback to last known cache (if any)
     if (cachedJson != null) {
       final List data = jsonDecode(cachedJson);
       return data.map((item) => Coin.fromJson(item)).toList();
@@ -67,7 +67,7 @@ class ApiService {
     return [];
   }
 
-  /// ---------------------- FETCH CHART DATA ----------------------
+  /// FETCH CHART DATA 
 
   Future<List<PricePoint>> fetchMarketChart(String coinId, String days) async {
     final prefs = await SharedPreferences.getInstance();
@@ -88,7 +88,7 @@ class ApiService {
         }[days] ??
         10;
 
-    // 1️⃣ Return cached values if fresh
+    // Return cached values if fresh
     if (cachedJson != null && _isCacheValid(cachedTime, cacheMinutes)) {
       try {
         final List data = jsonDecode(cachedJson);
@@ -96,14 +96,15 @@ class ApiService {
             .map((e) => PricePoint(
                   e['t'] as int,
                   (e['p'] as num).toDouble(),
-                ))
+                ))flutter run -d chrome
+
             .toList();
       } catch (e) {
-        debugPrint("⚠️ Chart cache decode error: $e");
+        debugPrint("Chart cache decode error: $e");
       }
     }
 
-    // 2️⃣ Fetch from API
+    // Fetch from API
     try {
       final url = Uri.parse(
         '$_baseUrl/coins/$coinId/market_chart?vs_currency=usd&days=$days',
@@ -135,10 +136,10 @@ class ApiService {
         return list;
       }
     } catch (e) {
-      debugPrint("❌ Chart fetch error: $e");
+      debugPrint(" Chart fetch error: $e");
     }
 
-    // 3️⃣ Provide fallback cached chart
+    //  Provide fallback cached chart
     if (cachedJson != null) {
       final List data = jsonDecode(cachedJson);
       return data
