@@ -11,7 +11,7 @@ class Coin {
   final double low24h;
   final double totalVolume;
   final double circulatingSupply;
-  final String description; // <-- Added this field
+  final String description; 
 
   Coin({
     required this.id,
@@ -26,7 +26,7 @@ class Coin {
     required this.low24h,
     required this.totalVolume,
     required this.circulatingSupply,
-    required this.description, // <-- Added to constructor
+    required this.description, 
   });
 
   // Factory constructor to create a Coin instance from JSON data.
