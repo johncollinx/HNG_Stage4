@@ -1,6 +1,4 @@
-// -----------------------------------------------------
-// COIN DETAIL SCREEN (Updated & Optimized)
-// -----------------------------------------------------
+// COIN DETAIL SCREEN 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -51,9 +49,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
-  // APP BAR
-  // -----------------------------------------------------
+    // APP BAR
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: _cardColor,
@@ -74,9 +70,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
-  // SCREEN BODY
-  // -----------------------------------------------------
+    // SCREEN BODY
+  
   Widget _buildBody(CoinDetailViewModel vm) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
@@ -98,9 +93,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // HEADER SECTION
-  // -----------------------------------------------------
   Widget _buildHeader(Coin coin) {
     final bool isPositive = coin.priceChangePercentage24h >= 0;
     final Color changeColor = isPositive ? _positiveColor : _negativeColor;
@@ -156,9 +150,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
-  // TIMELINE SELECTORS
-  // -----------------------------------------------------
+  
+  // TIMELINE SELECTOR
   Widget _buildTimelineSelectors(CoinDetailViewModel vm) {
     const timelines = {
       '1D': '1',
@@ -194,9 +187,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+
   // CHART CARD
-  // -----------------------------------------------------
   Widget _buildChartCard(CoinDetailViewModel vm) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -221,9 +213,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // CHART CONTENT (FL_CHART)
-  // -----------------------------------------------------
   Widget _buildChartContent(CoinDetailViewModel vm) {
     if (vm.state == ChartState.loading) {
       return const Center(
@@ -327,9 +318,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // KEY METRICS
-  // -----------------------------------------------------
   Widget _buildKeyMetrics(Coin coin) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,9 +375,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // ATH / ATL SECTION
-  // -----------------------------------------------------
   Widget _buildAthAtlSection(Coin coin) {
     final double ath = coin.currentPrice * 2.5;
     final double atl = coin.currentPrice * 0.25;
@@ -458,9 +447,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // HISTORY SECTION
-  // -----------------------------------------------------
   Widget _buildHistorySection(Coin coin) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,9 +493,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // -----------------------------------------------------
+  
   // BOTTOM ACTIONS
-  // -----------------------------------------------------
   Widget _buildBottomActions() {
     return Container(
       padding: const EdgeInsets.all(16),
