@@ -94,9 +94,8 @@ class ApiService {
             .map((e) => PricePoint(
                   e['t'] as int,
                   (e['p'] as num).toDouble(),
-                ))flutter run -d chrome
-
-            .toList();
+                ))
+            .toList(); // <-- CORRECTED: Stray command removed here.
       } catch (e) {
         debugPrint("Chart cache decode error: $e");
       }
