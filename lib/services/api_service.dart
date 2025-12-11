@@ -16,7 +16,7 @@ class ApiService {
     'ice-network',   // Confirmed ID for Ice Open Network
     'tron',          // ID for TRON (TRX)
     'binancecoin',   // ID for BNB
-    'stacks',        // ID for STACKS (STX)
+    'stacks',        // ID for STX
     'luno-coin',     // ASSUMED ID for LUNO (Adjust if error occurs)
   ];
   // ------------------------------------------
@@ -29,7 +29,7 @@ class ApiService {
     return (now - timestamp) < minutes * 60 * 1000;
   }
 
-  /// STEP 1: FETCH TOP 50 MARKET COINS + REQUIRED COINS
+  /// FETCH COIN LIST (ONLY SPECIFIED COINS)
 
   Future<List<Coin>> fetchCoinList() async {
     final prefs = await SharedPreferences.getInstance();
@@ -46,45 +46,16 @@ class ApiService {
       }
     }
 
-    // List to hold the final merged coins
-    List<Coin> mergedCoinList = [];
+    // List to hold the final coins (only the required ones)
+    List<Coin> requiredCoinList = [];
 
     try {
-      // 1. FETCH THE TOP 50 COINS (Rich Market Data)
-      final topNUrl = Uri.parse(
-        '$_baseUrl/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false',
-      );
+      // 1. FETCH ONLY THE SPECIFIC REQUIRED COINS
+      requiredCoinList = await _fetchSpecificCoins(_requiredCoinIds);
 
-      final topNResponse = await http.get(topNUrl);
-
-      if (topNResponse.statusCode == 200) {
-        final List topNData = jsonDecode(topNResponse.body);
-        mergedCoinList.addAll(topNData.map((item) => Coin.fromJson(item)).toList());
-      } else {
-         debugPrint("Error fetching Top 50: ${topNResponse.statusCode}");
-      }
-
-      // 2. FETCH THE SPECIFIC REQUIRED COINS
-      final specificCoins = await _fetchSpecificCoins(_requiredCoinIds);
-
-      // 3. MERGE AND CLEANUP
-      // Identify IDs already present in the Top N list
-      final topNIds = mergedCoinList.map((coin) => coin.id).toSet();
-      
-      // Add specific coins only if their ID is NOT in the Top N list
-      for (var coin in specificCoins) {
-        if (!topNIds.contains(coin.id)) {
-          mergedCoinList.add(coin);
-        }
-      }
-      
-      // OPTIONAL: Sort the final list by rank again to ensure the newly added 
-      // coins appear in order if they have valid marketCapRank (or are at the bottom).
-      mergedCoinList.sort((a, b) => a.marketCapRank.compareTo(b.marketCapRank));
-
-      // Store merged JSON in cache (Need Coin.toJson() for this)
+      // 2. CACHING: Store the required list's JSON
       // Assuming your Coin model has a toJson() method:
-      final finalEncodedBody = jsonEncode(mergedCoinList.map((c) => c.toJson()).toList());
+      final finalEncodedBody = jsonEncode(requiredCoinList.map((c) => c.toJson()).toList());
       
       prefs.setString('cached_coin_list', finalEncodedBody);
       prefs.setInt(
@@ -92,10 +63,10 @@ class ApiService {
         DateTime.now().millisecondsSinceEpoch,
       );
       
-      return mergedCoinList;
+      return requiredCoinList;
 
     } catch (e) {
-      debugPrint("Network fetch/merge error: $e");
+      debugPrint("Network fetch error: $e");
     }
 
     // Fallback to last known cache (if any)
@@ -107,7 +78,7 @@ class ApiService {
     return [];
   }
 
-  /// NEW HELPER: FETCH DATA FOR SPECIFIC COIN IDs
+  /// HELPER: FETCH DATA FOR SPECIFIC COIN IDs
 
   Future<List<Coin>> _fetchSpecificCoins(List<String> coinIds) async {
     if (coinIds.isEmpty) return [];
@@ -133,7 +104,7 @@ class ApiService {
     return [];
   }
 
-  /// FETCH CHART DATA 
+  // --- (fetchMarketChart function remains unchanged) ---
 
   Future<List<PricePoint>> fetchMarketChart(String coinId, String days) async {
     final prefs = await SharedPreferences.getInstance();
