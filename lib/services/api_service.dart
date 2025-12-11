@@ -13,11 +13,11 @@ class ApiService {
   // --- COIN IDs TO SPECIFICALLY INCLUDE ---
   // Using the correct CoinGecko API IDs/slugs.
   static const List<String> _requiredCoinIds = [
-    'ice-network',   // Confirmed ID for Ice Open Network
+    'ice',   // Confirmed ID for Ice Open Network
     'tron',          // ID for TRON (TRX)
     'binancecoin',   // ID for BNB
-    'stacks',        // ID for STX
-    'luno-coin',     // ASSUMED ID for LUNO (Adjust if error occurs)
+    'blockstack',        // ID for STX
+    'luno',     // ASSUMED ID for LUNO (Adjust if error occurs)
   ];
   // ------------------------------------------
 
