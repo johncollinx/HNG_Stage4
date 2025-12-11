@@ -37,9 +37,7 @@ class ApiService {
 
     // Fetch from API
     try {
-      final url = Uri.parse(
-        '$_baseUrl/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false',
-      );
+      final url = Uri.parse('$_baseUrl/coins/list');
 
       final response = await http.get(url);
 
