@@ -1,4 +1,5 @@
-// A simple model to hold price and timestamp for charting
+// lib/models/price_point.dart
+
 class PricePoint {
   // Timestamp is stored as an integer (milliseconds since epoch)
   final int timestamp;
@@ -8,8 +9,16 @@ class PricePoint {
 
   PricePoint(this.timestamp, this.price);
 
-  // A helper method that some charting libraries might use,
-  // or for easy debugging.
+  // Helper method to convert PricePoint to a map for compact caching 
+  // (used in ApiService for chart data)
+  Map<String, dynamic> toJson() {
+    return {
+      // Use short keys for smaller cache size
+      't': timestamp,
+      'p': price,
+    };
+  }
+
   @override
   String toString() {
     return 'PricePoint(timestamp: $timestamp, price: $price)';
