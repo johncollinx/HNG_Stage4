@@ -58,7 +58,7 @@ Installation & Run
 
 Clone the repository:
 
-git clone [https://github.com/johncollinx/HNG_Stage4]
+git clone [https://github.com/johncollinx/Coin_Listing_App]
 cd crypto_tracker_mvvm
 
 
